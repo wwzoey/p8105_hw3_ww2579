@@ -10,6 +10,7 @@ library(tidyverse)
 library(p8105.datasets)
 library(readxl)
 data("ny_noaa")
+library(patchwork)
 
 knitr::opts_chunk$set(
   fig.width = 12,
@@ -137,8 +138,9 @@ Make a single-panel plot.
 ```{r}
 plot_accel = 
   tidied_df %>%
-  ggplot(aes(x = activity_min, y = activity_counts, group = day_id, color = day_id),alpha = 0.5) +
+  ggplot(aes(x = activity_min, y = activity_counts, group = day_id, color = day_id),alpha = 0.1) +
   geom_line() +
+  geom_smooth(se = FALSE) +
   scale_y_continuous(
     trans = "sqrt") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
@@ -146,6 +148,8 @@ plot_accel =
 plot_accel
 ```
 
+Conclusions:
+From the graph above we can see that 
 
 ## Problem 3
 
@@ -159,6 +163,7 @@ ny_noaa
 ```
 
 The most commonly observed values for snowfall. 
+
 ```{r}
 ny_noaa %>%
   group_by(snow) %>%
@@ -179,12 +184,47 @@ jj_plot = ny_noaa %>%
     mean_tmax = (mean(tmax,na.rm = TRUE))) %>%
   ggplot(aes(x = year, y = mean_tmax, group = id, color = id)) +
   geom_point() +
+  geom_line() +
   geom_smooth(se = F) +
   facet_grid(~month) +
+  labs(
+    x = "Year",
+    y = "Mean_Tmax (tenths of degrees C)") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
         legend.position = "none")
 
 jj_plot
 
 ```
+
+Interpretations:
+
+
+Make a two-panel plot. 
+
+```{r}
+mean_temp_plot = ny_noaa %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point() +
+  geom_hex() +
+  labs(
+    title = "Max_Temp vs Min_Temp",
+    x = "Min_Temp (tenths of degrees C)",
+    y = "Max_Temp (tenths of degrees C)")
+
+mean_temp_plot
+
+snow_plot = 
+  ny_noaa %>%
+  filter(snow > 0  & snow < 100 ) %>%
+  ggplot(aes(x = year, y = snow, group = year, colour = year)) +
+  geom_boxplot(alpha = 0.4) +
+  labs(x = "Year", y = "Snow (mm)", title = "Distribution of Snowfall by Year")
+
+snow_plot
+
+mean_temp_plot+snow_plot
+```
+
+Interpretations:
 
