@@ -116,3 +116,32 @@ This dataset contains `r nrow(tidied_df)` rows and `r ncol(tidied_df)` columns.
 It collects data of activity counts for each minute of a 24-hour day for 35 days (i.e. 5 weeks), with a total number of observations of `r nrow(tidied_df)`.
 
 There are variables `r ls(tidied_df)` included.
+
+Data summary.
+
+```{r}
+day_activity = 
+  tidied_df %>%
+  group_by(week, day, day_id) %>%
+  summarise(activity_per_day = sum(activity_counts)) %>%
+  knitr::kable()
+
+day_activity
+```
+
+After aggregating across minutes for each day, there are total `r nrow(day_activity)` observations. One standing-out feature is that on Saturdays of week 4 and 5, the activity counts are both 1440 per day.
+
+
+Make a single-panel plot.
+
+```{r}
+plot_accel = 
+  tidied_df %>%
+  ggplot(aes(x = activity_min, y = activity_counts, group = day_id, color = day_id),alpha = 0.5) +
+  geom_line() +
+  scale_y_continuous(
+    trans = "sqrt") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+
+plot_accel
+```
