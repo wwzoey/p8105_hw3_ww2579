@@ -87,3 +87,32 @@ instacart %>%
   )
 ```
 
+
+## Problem 2
+
+Load, tidy, and wrangle the data.
+
+```{r}
+tidied_df = 
+  read_csv("./data/accel_data.csv") %>%
+  janitor::clean_names() %>%
+  pivot_longer(
+    activity_1:activity_1440,
+    names_to = "activity_min",
+    values_to = "activity_counts",
+    names_prefix = "activity_") %>%
+  mutate(
+    dow = case_when(
+      day %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday") ~ "weekday",
+      day %in% c("Saturday", "Sunday") ~ "weekend"),
+    day = factor(day),
+    dow = factor(dow),
+    activity_min = as.numeric(activity_min))
+
+tidied_df
+```
+This dataset contains `r nrow(tidied_df)` rows and `r ncol(tidied_df)` columns. 
+
+It collects data of activity counts for each minute of a 24-hour day for 35 days (i.e. 5 weeks), with a total number of observations of `r nrow(tidied_df)`.
+
+There are variables `r ls(tidied_df)` included.
