@@ -145,3 +145,26 @@ plot_accel =
 
 plot_accel
 ```
+
+
+## Problem 3
+
+```{r}
+ny_noaa = ny_noaa %>%
+  separate(date, into = c("year", "month", "day"), convert = TRUE) %>%
+  mutate(month = factor(month),
+         tmax = as.numeric(tmax),
+         tmin = as.numeric(tmin))
+ny_noaa
+```
+
+The most commonly observed values for snowfall. 
+```{r}
+ny_noaa %>%
+  group_by(snow) %>%
+  mutate(N = n()) %>%
+  ungroup() %>%
+  filter(N == max(N))
+```
+
+The most commonly observed value is "0" as the code chunk shows above. 
