@@ -168,3 +168,23 @@ ny_noaa %>%
 ```
 
 The most commonly observed value is "0" as the code chunk shows above. 
+
+Jan vs July.
+
+```{r}
+jj_plot = ny_noaa %>%
+  filter(month %in% c("1","7")) %>%
+  group_by(month,year,id) %>%
+  summarize(
+    mean_tmax = (mean(tmax,na.rm = TRUE))) %>%
+  ggplot(aes(x = year, y = mean_tmax, group = id, color = id)) +
+  geom_point() +
+  geom_smooth(se = F) +
+  facet_grid(~month) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+        legend.position = "none")
+
+jj_plot
+
+```
+
